@@ -1,0 +1,39 @@
+@startuml
+skinparam defaultFontName 楷体
+
+package com.shenjitang.permission.sso.client {
+    class SsoSessionListener {
+        
+    }
+
+    class SsoClientFilter {
+    }
+}
+
+package javax.servlet {
+    Interface Filter {
+        + void doFilter(...)
+    }
+    package http {
+        Interface ServletContextListener {
+            public void contextDestroyed(ServletContextEvent arg0)
+            public void contextInitialized(ServletContextEvent arg0)
+        }
+        Interface HttpSessionListener {
+            + void sessionCreated(HttpSessionEvent se)
+            + void sessionDestroyed(HttpSessionEvent se)
+        }
+        Interface HttpSessionAttributeListener {
+            + void attributeAdded(event)
+            + void attributeRemoved(event)
+            + void attributeReplaced(event)
+        }
+    }
+    
+}
+
+SsoSessionListener -|> HttpSessionListener
+SsoSessionListener -|> HttpSessionAttributeListener
+SsoSessionListener -|> ServletContextListener
+SsoClientFilter -|> Filter
+@enduml

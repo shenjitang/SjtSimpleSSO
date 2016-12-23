@@ -1,0 +1,38 @@
+@startuml
+skinparam defaultFontName 楷体
+
+package com.shenjitang.permission.service {
+    Interface ISubjectService {
+        + Set<String> getPermissions(Set<String> subjects)
+        + boolean addPermissionItem(PermissionItem item)
+    }
+    Interface IUserService {
+        + User addUser(User user)
+        + AuthResult verifyUserAndPwd(String user, String pwd)
+    }
+    package com.shenjitang.sso.service.impl {
+        class UserService {
+            + DataSource dataSource
+            - String getPwd(String user)
+        }
+        class SubjectService {
+        }
+    }
+}
+
+package com.shenjitang.permission.dto {
+    class SubjectPermission {
+        String subjectName
+        String permissionItem
+    }
+    class User {
+        String name
+        String pwd
+    }
+}
+
+
+com.shenjitang.permission.service -> com.shenjitang.permission.dto
+
+
+@enduml

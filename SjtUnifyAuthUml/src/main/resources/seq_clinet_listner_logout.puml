@@ -1,0 +1,26 @@
+@startuml
+skinparam defaultFontName 楷体
+hide footbox
+autonumber "<b>[00]"
+title 登出工作流程
+
+
+box "webapp"
+participant "SsoSessionListener" as listener
+participant session
+end box
+box "SSO Service"
+participant "IAuthService" as server
+end box
+-> listener : remove obj from session
+alt obj is a user
+    listener -> server : destoryTicket(appName, ticket)
+else
+    alt isNeedSaveToServer() == true
+        listener -> server : removeFromSession(appName, ticket, obj)
+    end alt
+else
+end alt
+
+
+@enduml

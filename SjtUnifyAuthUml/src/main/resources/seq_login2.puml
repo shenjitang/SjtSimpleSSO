@@ -1,0 +1,28 @@
+@startuml
+skinparam defaultFontName 楷体
+skin BlueModern
+hide footbox
+autonumber "<b>[00]"
+title 神机堂简单统一认证
+
+actor Browser
+participant "Web App 1" as App1
+participant "Web App 2" as App2
+participant "SSO 服务器" as Sso
+
+Browser -> App1 : login
+App1 -> Sso : createTicket(user,pwd)
+App1 <-- Sso : return(ticket)
+App1 -> App1 : createSession
+
+Browser -> App2 : main page
+App2 -> Sso : checkTicket
+App2 <-- Sso : return(user)
+App2 -> App2 : createSession
+
+Browser -> App2 : logout
+App2 -> Sso : destoryTicket
+App2 -> App2 : destorySession
+Browser <-- App2 : 
+Browser -> Browser : cleanCookie
+@enduml

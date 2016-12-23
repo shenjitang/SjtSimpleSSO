@@ -1,0 +1,65 @@
+@startuml
+skinparam defaultFontName 楷体
+hide footbox
+autonumber "<b>[00]"
+title 神机堂简单统一认证客户端
+
+actor Browser
+box "webapp"
+participant "SsoSessionListener" as listener
+participant "SsoClientFilter" as filter
+participant request
+participant response
+participant session
+participant login.jsp
+participant login.do
+end box
+box "SSO Service"
+participant "IAuthService" as server
+end box
+box "User Servier"
+participant "IUserService" as userService
+end box
+Browser -> filter : http
+filter -> session : get("user")
+alt user == null 可能是未登陆，也可能是app转移
+    filter -> request : getHead("ticket")
+    alt ticket == null 可能是未登陆
+        filter -> session : get("ticket")
+        alt ticket == null 未登陆
+            filter --> Browser : redirect(login.jsp)
+            Browser -> login.jsp : http loginPage
+            Browser -> login.do : http submitLoginPage
+            login.do -> userService : verifyUserAndPwd()
+            login.do -> session : add(user)\n->add user to Session
+        else 纠错冗余
+            filter -> request : addHead(ticket)
+            filter -> response : addCookie(ticket)
+            filter -> session : add(user)
+        end alt
+    else app转移
+        filter -> server : checkTicket(ticket)
+        filter -> session : add(ticket)
+        filter -> session : add(user)
+        filter -> response : addHead(ticket)
+        filter -> response : addCookie(ticket)
+    end alt
+else 已经登录过了
+    filter -> request : getHead("ticket")
+    alt ticket == null listener已经把tiket放入session
+        filter -> response : addHead(ticket)
+        filter -> response : addCookie(ticket)
+    end alt
+end alt
+== add user to Session ==
+autonumber "<b>[00]"
+-> listener : add user to session
+listener -> session : get("ticket")
+alt ticket == null
+    listener -> server : createTicket(appName, user)
+    server --> listener : ticket
+    listener -> session : add(ticket)
+end alt
+
+
+@enduml

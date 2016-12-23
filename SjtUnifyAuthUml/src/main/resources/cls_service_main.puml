@@ -1,0 +1,64 @@
+@startuml
+skinparam defaultFontName 楷体
+
+package com.shenjitang.sso {
+    interface IAuthService {
+        + void destoryTicket(String appName, String ticket)
+        + String createTicket(String appName, String user, String sessonId, Cookie cookie)
+        + CookieInfo checkTicket(String appName, String ticket)
+        + void addToSession(String appName, String ticket, String obj)
+        + void removeFromSession(String appName, String ticket, String obj)
+        + void registApp(String appName, String host, String path)
+        + void getAppInfos()
+        + void createSessoin(String app, String sessionId)
+    }
+    package com.shenjitang.sso.auth.impl {
+        class AuthService {
+            - Long ticketTimeoutLimit
+            - Map<String, TicketInfo> ticketMap
+            - Map<String, AppInfo> appMap
+            + void regularInspectTicket()
+        }
+    }
+}
+package com.shenjitang.permission.user {
+    Interface IUserService {
+        + AuthResult verifyUserAndPwd(String user, String pwd)
+    }
+    package com.shenjitang.permission.user.impl {
+        class UserService {
+            + DataSource dataSource
+            - String getPwd(String user)
+        }
+    }
+}
+
+package com.shenjitang.sso.dto {
+    class TicketInfo {
+        String ticket
+        String sessionId
+        Date loginTime
+        Date activeTime
+        String user
+        Map sessionMap
+    }
+    class AuthResult {
+        Boolean success
+        String appName
+        String user
+        String errMessage
+    }
+    class AppInfo {
+        String appName
+        String host
+        String path
+    }
+}
+IAuthService <|-- AuthService
+
+
+
+com.shenjitang.permission.user -> com.shenjitang.sso.dto
+com.shenjitang.sso -> com.shenjitang.sso.dto
+
+@enduml

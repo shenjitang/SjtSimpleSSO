@@ -1,0 +1,24 @@
+@startuml
+skinparam defaultFontName 楷体
+
+title 神机堂简单统一认证
+
+component "DataSource" as sql
+interface dataAccess
+package "Permission" {
+    component [Permission Service] as perm
+    interface IPermission
+}
+
+package "SSO " {
+    component [Auth Service] as auth
+    interface IAuthService
+}
+
+IAuthService - auth
+IPermission - perm
+dataAccess - sql
+
+
+perm ..> dataAccess : use
+@enduml

@@ -1,0 +1,34 @@
+@startuml
+skinparam defaultFontName 楷体
+hide footbox
+autonumber "<b>[00]"
+title SsoSessionListener工作流程
+
+
+box "webapp"
+participant "SsoSessionListener" as listener
+participant session
+end box
+box "SSO Service"
+participant "IAuthService" as server
+end box
+-> listener : add obj to session
+alt obj is a user
+    listener -> session : get("ticket")
+    alt ticket == null
+        listener -> server : createTicket(appName, user)
+        server --> listener : ticket
+        listener -> session : add(ticket)
+        listener -> listener : setAuthed(true)
+    end alt
+end alt
+
+alt authed == true
+    alt isNeedSaveToServer() == true
+        listener -> server : addToSession(appName, ticket, obj)
+    end alt
+else
+end alt
+
+
+@enduml

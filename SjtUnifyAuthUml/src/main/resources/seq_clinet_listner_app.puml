@@ -1,0 +1,24 @@
+@startuml
+skinparam defaultFontName 楷体
+hide footbox
+autonumber "<b>[00]"
+title App Startup的处理流程
+
+
+box "webapp"
+participant "SsoSessionListener" as listener
+participant ServletContext
+end box
+box "SSO Service"
+participant "IAuthService" as server
+end box
+-> listener : content startup
+listener -> ServletContext : getInitParamter(host)
+alt host == null
+    listener -> ServletContext : getVirtualServerName
+end alt
+listener -> ServletContext : getContextPath()
+listener -> server : registApp(appName, host, apth)
+listener -> server : getAppInfos
+listener -> ServletContext : setAttribute
+@enduml

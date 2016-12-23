@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:jaxrs="http://cxf.apache.org/blueprint/jaxrs"
+    xsi:schemaLocation="
+http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+http://cxf.apache.org/blueprint/jaxrs http://cxf.apache.org/schemas/blueprint/jaxrs.xsd">
+     <!--
+    <bean id="jsonProvider" class="com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider"/>
+    <bean id="jsonProvider" class="com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider"/>
+    <bean id="jsonProvider" class="org.apache.cxf.jaxrs.provider.JAXBElementProvider" />
+    -->
+    <jaxrs:server id="authService" address="/sso">
+        <jaxrs:serviceBeans>
+            <ref component-id="authSrc"/>
+        </jaxrs:serviceBeans>
+        <jaxrs:providers>           
+            <bean class="org.apache.cxf.jaxrs.provider.json.JSONProvider">
+                <property name="marshallAsJaxbElement" value="true"></property>
+                <property name="dropRootElement" value="true"/> 
+                <property name="dropCollectionWrapperElement" value="true"/> 
+                <property name="attributesToElements" value="true" />    
+                <property name="serializeAsArray" value="true"/> 
+                <property name="ignoreNamespaces" value="true"/> 
+                  <!--
+                <property name="ignoreNamespaces" value="true" />
+                <property name="ignoreMixedContent" value="true" />
+                <property name="supportUnwrapped" value="true" />
+                <property name="convertTypesToStrings" value="true" />  
+                -->
+            </bean>
+            <bean class="org.apache.cxf.jaxrs.provider.JAXBElementProvider">
+                <property name="marshallAsJaxbElement" value="true"></property>
+<!--
+                <property name="singleJaxbContext" value="true"/>
+                <property name="extraClass">
+                   <list>
+                     <value>java.util.HashSet</value>
+                     <value>java.util.ArrayList</value>  
+                   </list>
+                </property>
+                <property name="jaxbElementClassNames" >
+                    <list>
+                        <value>java.util.List</value>
+                        <value>java.util.Set</value>
+                        <value>java.util.ArrayList</value>
+                        <value>java.util.HashSet</value>
+                    </list>
+                </property>
+                -->
+            </bean>
+        </jaxrs:providers>
+<!--
+        <jaxrs:providers>           
+            <ref bean="jsonProvider" />
+        </jaxrs:providers>
+        <jaxrs:extensionMappings>
+            <entry key="json" value="application/json"/>
+        </jaxrs:extensionMappings>
+        -->
+    </jaxrs:server>
+    <bean id="authSrc" class="org.shenjitang.permission.sso.impl.AuthService"/>
+    <service ref="authSrc" interface="org.shenjitang.permission.sso.IAuthService"/>
+
+</blueprint>

@@ -1,0 +1,16 @@
+@startuml
+skinparam defaultFontName 楷体
+title 神机堂简单统一认证
+left to right direction
+APP << Process >>
+
+APP --> (登录)
+APP --> (登出)
+APP --> (登录注册)
+APP --> (登录验证)
+APP --> (上传会话参数)
+APP --> (获取会话参数表)
+(登录) <-- (登录注册) : include
+(登录验证) <-- (获取会话参数表) : include
+(登出) <-- (登录注销) : include
+@enduml

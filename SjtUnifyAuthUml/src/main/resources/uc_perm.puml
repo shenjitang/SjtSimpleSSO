@@ -1,0 +1,11 @@
+@startuml
+skinparam defaultFontName 楷体
+title 神机堂简单统一认证
+left to right direction
+actor APP << Process >>
+
+APP --> (查询用户权限)
+APP --> (管理用户权限)
+(管理用户权限) --> (删除用户权限) : extend
+(管理用户权限) --> (增加用户权限) : extend
+@enduml
